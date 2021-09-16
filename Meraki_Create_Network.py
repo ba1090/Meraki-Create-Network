@@ -23,8 +23,8 @@ xlsx_dataframe = pd.read_excel (r'Informations_File.xlsx')
 xlsx_dict = xlsx_dataframe.to_dict(orient='records')
 
 # Prametri organizzazione e template configurazione
-org_id = '782500435255623681' # Amplifon-New (GET https://api.meraki.com/api/v1/organizations/)
-template_id = 'N_782500435255630375' # template ES (GET https://api.meraki.com/api/v1/organizations/782500435255623681/configTemplates)
+org_id = 'XXXXXXXXXXXX' # Amplifon-New (GET https://api.meraki.com/api/v1/organizations/)
+template_id = 'XXXXXXXXX' # template ES (GET https://api.meraki.com/api/v1/organizations/782500435255623681/configTemplates)
 
 index = 0
 
