@@ -36,6 +36,7 @@ time_zone = 'Europe/Rome' # time zone to be configured on the new network
 index = 0
 
 for i in xlsx_dict: # for every row in the excel file: 
+
     # creating a new network
     print('- Creating network',i['netname'])
     response = dashboard.organizations.createOrganizationNetwork(
