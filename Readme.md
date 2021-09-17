@@ -23,9 +23,11 @@ How to compile xlsx file:
 
 - nettag: Tag to be added to the network.
 
+- address: Address of the city where you will install the device.
+
 - zipcode: Zip Code of city.
 
-- city: Address of the place you will install the device.
+- city: City where you will install the device.
 
 - vlan: VLAN ID of the network you are using.
 

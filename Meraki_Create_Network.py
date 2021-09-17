@@ -15,8 +15,14 @@ dashboard = meraki.DashboardAPI(API_KEY)
 
 now = datetime.now()
 dt_string = now.strftime('%Y-%m-%d_%H-%M-%S')
-file_name = 'log_file_Amplifon_' + dt_string + '.txt'
+
+# log file with: netname, serial, ipnet, ipdev, address, zipcode and city
+file_name = 'log_file_' + dt_string + '.txt'
 log_file = open(file_name, 'wt')
+
+# log file with: netname and network_new
+file_name_netID = 'network_ID_' + dt_string + '.txt'
+log_file_netID = open(file_name_netID, 'wt')
 
 # import excel file with informations
 xlsx_dataframe = pd.read_excel (r'Informations_File.xlsx')
@@ -95,9 +101,15 @@ for i in xlsx_dict: # for every row in the excel file:
     # printing statistics
     index+=1
     print('- Network',i['netname'],'with device',i['serial'], 'and IP', i['ipnet'], i['ipdev'],'completed\n\n')
-    print('- Total progress:',index,"-",str(int(index/len(xlsx_dict)*100)),"%")
+    print('- Total progress:',index,"of",len(xlsx_dict),'-',str(int(index/len(xlsx_dict)*100)),"%")
     now = datetime.now()
     dt_string = now.strftime('%d/%m/%Y %H:%M:%S')
+
+    # log file with: netname, serial, ipnet, ipdev, address, zipcode and city
     log_file.write(dt_string+' '+i['netname']+' '+i['serial']+' '+i['ipnet']+' '+i['ipdev']+' '+i['address']+' '+str(i['zipcode'])+' '+i['city']+'\n')
 
+    # log file with: netname and network_new
+    log_file_netID.write(i['netname']+','+network_new+'\n')
+
 log_file.close()
+log_file_netID.close()
