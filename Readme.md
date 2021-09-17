@@ -5,9 +5,7 @@ The script aims to create a new network on the Meraki Dashboard in an Organizati
 Parameters to be configured in the Python file:
 - API_KEY: insert your personal Meraki API key
 
-- xlsx_dataframe: you can change working folder on your IDE, place the script anche the xls
- 
-- file in the same folder and open the terminal or you fan add the complete path to you file. For esample: r'C:\Users\ba1090\Documents\Script\MerakiInformations_File.xlsx'.
+- xlsx_dataframe: you can change working folder on your IDE, place the script anche the xlsx file in the same folder and open the terminal or you fan add the complete path to you file. For esample: r'C:\Users\ba1090\Documents\Script\MerakiInformations_File.xlsx'.
 	
 - org_id: Organization ID that you are working on. You can find the Organization ID with: GET https://api.meraki.com/api/v1/organizations/
 	
