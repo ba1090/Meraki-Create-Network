@@ -1,9 +1,9 @@
 
-# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-# * The script aims to create a new network on the Meraki Dashboard in the        *
-# * Amplifon Organization and to configure the new network based on the country   *
-# * template that is being configured.                                            *
-# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+# * The script aims to create a new network on the Meraki Dashboard in an *
+# * Organization and to configure the new network based on a template     *
+# * that is being configured.                                             *
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 import pandas as pd
 import meraki
@@ -18,46 +18,47 @@ dt_string = now.strftime('%Y-%m-%d_%H-%M-%S')
 file_name = 'log_file_Amplifon_' + dt_string + '.txt'
 log_file = open(file_name, 'wt')
 
-# chiudere il file excel per farlo leggere
+# import excel file with informations
 xlsx_dataframe = pd.read_excel (r'Informations_File.xlsx')
 xlsx_dict = xlsx_dataframe.to_dict(orient='records')
 
-# Prametri organizzazione e template configurazione
-org_id = 'XXXXXXXXXXXX' # Amplifon-New (GET https://api.meraki.com/api/v1/organizations/)
-template_id = 'XXXXXXXXX' # template ES (GET https://api.meraki.com/api/v1/organizations/782500435255623681/configTemplates)
+# organization, template id and time_zone
+org_id = 'XXXXXXXXXXXX' # find organization ID with: GET https://api.meraki.com/api/v1/organizations/
+template_id = 'XXXXXXXXXXXX' # find the template ID with: GET https://api.meraki.com/api/v1/organizations/ORGANIZATION_ID/configTemplates
+time_zone = 'Europe/Rome' # time zone to be configured on the new network
 
 index = 0
 
-for i in xlsx_dict: # i prende il valore della riga da 0 a fine-1 di xlsx_dict 
-    # crea una nuova network
+for i in xlsx_dict: # for every row in the excel file: 
+    # creating a new network
     print('- Creating network',i['netname'])
     response = dashboard.organizations.createOrganizationNetwork(
         organizationId = org_id, 
         name = i['netname'],
         productTypes = ['appliance'],
-        timeZone = 'Europe/Brussels',
+        timeZone = time_zone,
         tags = [i['nettag']] # array
     )
     print('- Created network',response['id'], 'with name',response['name'])
 
-    # salva l'ID della network creata
+    # saving the new network ID
     network_new = response['id'] 
 
-    # bind della network al template da assegnare
+    # binding the new network to the template
     response = dashboard.networks.bindNetwork(
             networkId = network_new,
             configTemplateId = template_id
     )
     print('- Network',i['netname'],'binded to template')
 
-    # aggiunta del device alla network
+    # adding the device to the network
     response = dashboard.networks.claimNetworkDevices(
         networkId = network_new,
         serials = [i['serial']] # array
     )
     print('- Device',i['serial'],'added to network',i['netname'])
 
-    # configurazione dettagli device
+    # checking if the device is correctly added to the network
     control = 0
     while control < 1 :
         try:
@@ -68,19 +69,21 @@ for i in xlsx_dict: # i prende il valore della riga da 0 a fine-1 di xlsx_dict
             print('- Device',i['serial'],'read normally')
         except:
             print('* Device',i['serial'],'not found in network',i['netname'],'\n*** Sleep 15 seconds ***')
+            # if you are in stuck in this loop, go on the new network in the Meraki Dashboard
+            # and change name manually to the new device
             time.sleep(15)
             print('* Retry read device',i['serial'],'informations in network',i['netname'])
             print('* Total progress:',str(int(index/len(xlsx_dict)*100)))
             pass
+    # configuring name and address on the device
     response = dashboard.devices.updateDevice(
         serial = i['serial'],
         name = i['netname']+' - MX64W',
         address = i['address']+', '+str(i['zipcode'])+' '+i['city']
-        # verificare se possibile modificare porta WAN2
     )
     print(i['serial'], ',', i['netname']+' - MX64W', i['address'], str(i['zipcode']), i['city'])
 
-    # configurazione IP VLAN appliance
+    # configuring IP on the appliance vlan
     response = dashboard.appliance.updateNetworkApplianceVlan(
         networkId = network_new,
         vlanId = i['vlan'],
@@ -89,6 +92,7 @@ for i in xlsx_dict: # i prende il valore della riga da 0 a fine-1 di xlsx_dict
     )
     print('- VLAN '+str(i['vlan']), 'with network',i['ipnet'], 'and IP',i['ipdev'])
 
+    # printing statistics
     index+=1
     print('- Network',i['netname'],'with device',i['serial'], 'and IP', i['ipnet'], i['ipdev'],'completed\n\n')
     print('- Total progress:',index,"-",str(int(index/len(xlsx_dict)*100)),"%")
