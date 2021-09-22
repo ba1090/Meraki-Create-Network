@@ -10,6 +10,7 @@ import meraki
 import time
 from datetime import datetime
 
+# insert your API key
 API_KEY = 'API_KEY'
 dashboard = meraki.DashboardAPI(API_KEY)
 
