@@ -12,7 +12,7 @@ Before starting the Python script, change the following parameters and compile I
 	
 - org_id: Organization ID that you are working on. You can find the Organization ID with: GET https://api.meraki.com/api/v1/organizations/
 	
-- template_id: ID of the template you have created on the Meraki Dashboard you can find the template ID with: GET https://api.meraki.com/api/v1/organizations/ORGANIZATION_ID/configTemplates
+- template_id: ID of the template you have created on the Meraki Dashboard. You can find the template ID with: GET https://api.meraki.com/api/v1/organizations/<ORGANIZATION_ID>/configTemplates
 
 - time_zone: time zone of the network you are creating. For example: 'Europe/Rome'
 
