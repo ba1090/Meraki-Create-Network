@@ -1,7 +1,7 @@
 The script aims to create a new network on the Meraki Dashboard in an Organization and to configure the new network based on a template that is being configured.
 
 # How to run
-All configuration data is read from the Informations_File.xlsx file.
+All configuration data are read from the Informations_File.xlsx file.
 
 Before starting the Python script, change the following parameters and compile Informations_File.xlsx file.
 
